@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -46,8 +47,8 @@ func handleQuit() {
 	signal.Ignore(syscall.SIGTERM)
 	go func() {
 		<-sig
-		// exec.Command("reset").Run()
-		exec.Command("stty", "sane").Run()
+		exec.Command("stty", "echo", "cooked").Run()
+		time.Sleep(1)
 		os.Exit(0)
 	}()
 }
