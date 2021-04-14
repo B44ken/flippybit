@@ -1,6 +1,10 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
+	"strconv"
+	"time"
+)
 
 type Bot struct {
 	x    int
@@ -8,10 +12,36 @@ type Bot struct {
 	code int64
 }
 
+func seed() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
+
+// make 8 digit binary string
+func toBin(n int64) string {
+	base := strconv.FormatInt(n, 2)
+	for {
+		if len(base) == 8 {
+			return base
+		}
+		base = "0" + base
+	}
+}
+
+// make 2 digit hex string
+func toHex(n int64) string {
+	base := strconv.FormatInt(n, 16)
+	if len(base) == 1 {
+		base = "0" + base
+	}
+	return base
+}
+
+// flip a bit based on keyboard key (1-8)
 func makeLaunchCode(cur int64, key byte) int64 {
+
 	key -= 49
-	k := int64(key)
-	if k > 8 {
+	key = 7 - key
+	if key > 7 {
 		return cur
 	}
 	if key == 0 {
@@ -27,15 +57,15 @@ func newRandomBot() Bot {
 	return Bot{x, y, code}
 }
 
-func filterBotMatch(launchCode int64, bots []Bot) (Bot, []Bot) {
-	var match Bot
+func filterBotMatch(launchCode int64, bots []Bot) ([2]int, []Bot) {
+	matchCoords := [2]int{-1, -1}
 	var noMatch []Bot
 	for _, b := range bots {
-		if b.code == launchCode {
-			match = b
+		if b.code == launchCode && matchCoords[0] == -1 {
+			matchCoords = [2]int{b.x, b.y}
 		} else {
 			noMatch = append(noMatch, b)
 		}
 	}
-	return match, noMatch
+	return matchCoords, noMatch
 }

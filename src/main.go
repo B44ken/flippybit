@@ -2,22 +2,20 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
 	"os/exec"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 func main() {
+	var score int64
+
 	handleQuit()
 	exec.Command("stty", "-F", "/dev/tty", "cbreak", "min", "1").Run()
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 
-	rand.NewSource(time.Now().UnixNano())
-
-	key := make([]byte, 1)
+	var key byte
 	listenForKey(&key)
 
 	var bots []Bot
@@ -28,11 +26,15 @@ func main() {
 
 	var launchCode int64
 	for {
-		if key[0] != 0 {
-			launchCode = makeLaunchCode(launchCode, key[0])
-			_, bots = filterBotMatch(launchCode, bots)
-			fmt.Println(launchCode, "\n", bots)
-			key[0] = 0
+		if key != 0 {
+			launchCode = makeLaunchCode(launchCode, key)
+			var matched [2]int
+			matched, bots = filterBotMatch(launchCode, bots)
+			if matched != [2]int{-1, -1} {
+				launchCode = 0
+			}
+			drawScreen(bots, score, launchCode)
+			key = 0
 		}
 	}
 }
@@ -44,15 +46,18 @@ func handleQuit() {
 	signal.Ignore(syscall.SIGTERM)
 	go func() {
 		<-sig
-		exec.Command("reset").Run()
+		// exec.Command("reset").Run()
+		exec.Command("stty", "sane").Run()
 		os.Exit(0)
 	}()
 }
 
-func listenForKey(keys *[]byte) {
+func listenForKey(key *byte) {
 	go func() {
 		for {
-			os.Stdin.Read(*keys)
+			keys := make([]byte, 1)
+			os.Stdin.Read(keys)
+			*key = keys[0]
 		}
 	}()
 }
