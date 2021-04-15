@@ -6,19 +6,13 @@ import (
 	"time"
 )
 
-type Bot struct {
-	x    int
-	y    int
-	code int64
-}
-
-func seed() {
+func seedRandom() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
 // make 8 digit binary string
-func toBin(n int64) string {
-	base := strconv.FormatInt(n, 2)
+func toBin(n int) string {
+	base := strconv.FormatInt(int64(n), 2)
 	for {
 		if len(base) == 8 {
 			return base
@@ -28,8 +22,8 @@ func toBin(n int64) string {
 }
 
 // make 2 digit hex string
-func toHex(n int64) string {
-	base := strconv.FormatInt(n, 16)
+func toHex(n int) string {
+	base := strconv.FormatInt(int64(n), 16)
 	if len(base) == 1 {
 		base = "0" + base
 	}
@@ -37,7 +31,7 @@ func toHex(n int64) string {
 }
 
 // flip a bit based on keyboard key (1-8)
-func makeLaunchCode(cur int64, key byte) int64 {
+func makeLaunchCode(cur int, key byte) int {
 
 	key -= 49
 	key = 7 - key
@@ -53,11 +47,11 @@ func makeLaunchCode(cur int64, key byte) int64 {
 func newRandomBot() Bot {
 	y := gameHeight
 	x := rand.Intn(gameWidth)
-	code := rand.Int63n(255)
+	code := rand.Intn(255)
 	return Bot{x, y, code}
 }
 
-func filterBotMatch(launchCode int64, bots []Bot) ([2]int, []Bot) {
+func filterBotMatch(launchCode int, bots []Bot) ([2]int, []Bot) {
 	matchCoords := [2]int{-1, -1}
 	var noMatch []Bot
 	for _, b := range bots {
