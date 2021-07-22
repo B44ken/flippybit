@@ -20,7 +20,6 @@ func main() {
 	handleQuit(&globalStop)
 
 	// unbuffer terminal for char-by-char input
-	exec.Command("stty", "-F", "/dev/tty", "cbreak", "min", "1").Run()
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 
 	for i := 0; i < 10; i++ {
@@ -35,7 +34,8 @@ func main() {
 				continue
 			}
 			drawScreen(bots, score, launchCode)
-			time.Sleep(time.Second / 1)
+			// there's definitely a better way than manually refreshing
+			time.Sleep(time.Second / 24) 
 		}
 	}()
 
@@ -59,7 +59,7 @@ func handleQuit(globalStop *bool) {
 	go func() {
 		<-sig
 		*globalStop = true
-		exec.Command("reset").Run()
+		exec.Command("stty", "+echo").Run()
 		os.Exit(0)
 	}()
 }
