@@ -64,8 +64,8 @@ func filterBotMatch(launchCode int, bots []Bot) ([2]int, []Bot) {
 	return matchCoords, noMatch
 }
 
-func gameTick(bots []Bot, ticks int) []Bot {
-	bots = dropBots(bots)
+func gameTick(bots []Bot, ticks, score int) []Bot {
+	bots = dropBots(bots, score)
 	if botProbability(len(bots), ticks) > rand.Float64() {
 		bots = append(bots, newRandomBot())
 	}
@@ -73,7 +73,7 @@ func gameTick(bots []Bot, ticks int) []Bot {
 }
 
 // let the bots fall by one every tickRate
-func dropBots(bots []Bot) []Bot {
+func dropBots(bots []Bot, score int) []Bot {
 	var newBots []Bot
 	for _, b := range bots {
 		b.age += 1
@@ -83,7 +83,7 @@ func dropBots(bots []Bot) []Bot {
 		}
 		newBots = append(newBots, b)
 		if b.y == gameHeight {
-			quit(false)
+			quit(false, score)
 		}
 	}
 	return newBots

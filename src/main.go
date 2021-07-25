@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -22,7 +21,10 @@ func main() {
 	handleQuit(&globalStop)
 
 	// unbuffer terminal for char-by-char input
-	exec.Command("stty", "-F", "/dev/stty", "cbreak", "min", "1").Run()
+	exec.Command("stty", "cbreak", "min", "1").Run()
+	exec.Command("stty", "-echo").Run()
+	defer exec.Command("stty", "echo").Run()
+
 
 	// i'm doing this wrong
 	bots = append(bots, newRandomBot())
@@ -35,10 +37,10 @@ func main() {
 				continue
 			}
 			ticks++
-			drawScreen(bots, score, launchCode)
+			drawScreen(bots, score, launchCode, false)
 			// definitely a better way than manually refreshing
 			time.Sleep(time.Second / tickRate)
-			bots = gameTick(bots, ticks/tickRate)
+			bots = gameTick(bots, ticks/tickRate, score)
 		}
 	}()
 
@@ -47,7 +49,8 @@ func main() {
 			launchCode = makeLaunchCode(launchCode, key)
 			matched, bots = filterBotMatch(launchCode, bots)
 			if matched != [2]int{-1, -1} {
-				launchCode = 1
+				launchCode = 0
+				score++
 			}
 			key = 0
 		}
@@ -63,18 +66,14 @@ func handleQuit(globalStop *bool) {
 	go func() {
 		<-sig
 		*globalStop = true
-		quit(true)
+		quit(true, 0)
 	}()
 }
 
-func quit(wasManual bool) {
+func quit(wasManual bool, score int) {
 	exec.Command("stty", "sane").Run()
 	if !wasManual {
-		fmt.Println("game over!")
-		// todo: move to a pop-up type thing?
-		// +---------------+
-		// +   GAME OVER   +
-		// +---------------+
+		drawScreen(make([]Bot, 0), score, 0, true)
 	}
 	os.Exit(0)
 }

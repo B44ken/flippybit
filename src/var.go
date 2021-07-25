@@ -11,12 +11,19 @@ type Bot struct {
 const gfxSides = "|                                    |"
 const gfxSeperator = "+------------------------------------+"
 const gfxWords = "| HEX  | BINARY    | SCORE  | BEST   |"
+const gfxGameOver = "|          | GAME OVER |             |"
+const gfxGameOverSep = "|          +-----------+             |"
 const gameWidth = 36
 const gameHeight = 20
 const tickRate = 8
 const dropEvery = tickRate * 1.5
 
-// todo: bot prob. as a function of existing bots and time?
-func botProbability(botNum, time int) float64 {
-	return 0.008
+// needs work?
+func botProbability(botNumInt, timeInt int) float64 {
+	botNum := float64(botNumInt)
+	time := float64(timeInt)
+	if botNum == 0 {
+		return 0.2
+	}
+	return (0.012 / botNum) + (time * 0.0002)
 }

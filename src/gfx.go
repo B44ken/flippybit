@@ -19,10 +19,10 @@ func drawData(bots []Bot) {
 	}
 }
 
-func drawScreen(bots []Bot, score, launchCode int) {
+func drawScreen(bots []Bot, score, launchCode int, gameOver bool) {
 	clearScreen()
 	fmt.Println(gfxSeperator)
-	drawMain(bots)
+	drawMain(bots, gameOver)
 	fmt.Println(gfxSeperator)
 	fmt.Println(gfxWords)
 	drawVals(launchCode, score)
@@ -30,15 +30,13 @@ func drawScreen(bots []Bot, score, launchCode int) {
 }
 
 func drawVals(launchCode, score int) {
-	// hex := toHex(launchCode)
-	// bin := toBin(launchCode)
 	hex := pad(launchCode, 16, 2)
 	bin := pad(launchCode, 2, 8)
 	scr := pad(score, 10, 5)
 	fmt.Printf("| %s   | %s  | %s  | 00000  |\n", hex, bin, scr)
 }
 
-func drawMain(bots []Bot) {
+func drawMain(bots []Bot, gameOver bool) {
 	for i := 0; i < gameHeight; i++ {
 		var line = []byte(gfxSides)
 		for _, b := range bots {
@@ -50,6 +48,12 @@ func drawMain(bots []Bot) {
 				line[b.x+3] = '>'
 			}
 		}
-		fmt.Println(string(line))
+		if (i == 8 || i == 10) && gameOver {
+			fmt.Println(gfxGameOverSep)
+		} else if i == 9 && gameOver {
+			fmt.Println(gfxGameOver)
+		} else {
+			fmt.Println(string(line))
+		}
 	}
 }
