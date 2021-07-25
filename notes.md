@@ -1,5 +1,2 @@
-score part:
-+--------------------------------+
-| HEX | BINARY   | SCORE | BEST  |
-| 00  | 00000000 | 0000  | 0000  |
-+--------------------------------+
+// todo: windows support
+no support for ansi escapes used in clearScreen() and stty

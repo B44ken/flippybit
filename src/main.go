@@ -25,8 +25,6 @@ func main() {
 	exec.Command("stty", "-echo").Run()
 	defer exec.Command("stty", "echo").Run()
 
-
-	// i'm doing this wrong
 	bots = append(bots, newRandomBot())
 
 	launchCode := 0
