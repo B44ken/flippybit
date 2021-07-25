@@ -15,9 +15,8 @@ const gameWidth = 36
 const gameHeight = 20
 const tickRate = 8
 const dropEvery = tickRate * 1.5
-const botProbability = 0.02
 
-var DEBUG = ""
-
-// bot prob. as a function of existing bots and time?
-// func botProbability(botNum time int) float64 { }
+// todo: bot prob. as a function of existing bots and time?
+func botProbability(botNum, time int) float64 {
+	return 0.008
+}

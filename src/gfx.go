@@ -25,14 +25,17 @@ func drawScreen(bots []Bot, score, launchCode int) {
 	drawMain(bots)
 	fmt.Println(gfxSeperator)
 	fmt.Println(gfxWords)
-	drawVals(launchCode)
+	drawVals(launchCode, score)
 	fmt.Println(gfxSeperator)
 }
 
-func drawVals(launchCode int) {
-	hex := toHex(launchCode)
-	bin := toBin(launchCode)
-	fmt.Printf("| %s   | %s  |        |        |\n", hex, bin)
+func drawVals(launchCode, score int) {
+	// hex := toHex(launchCode)
+	// bin := toBin(launchCode)
+	hex := pad(launchCode, 16, 2)
+	bin := pad(launchCode, 2, 8)
+	scr := pad(score, 10, 5)
+	fmt.Printf("| %s   | %s  | %s  | 00000  |\n", hex, bin, scr)
 }
 
 func drawMain(bots []Bot) {

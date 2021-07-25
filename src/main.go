@@ -15,28 +15,30 @@ func main() {
 	var key byte
 	globalStop := false
 	score := 0
+	ticks := 0
 
 	listenForKey(&key)
 	seedRandom()
 	handleQuit(&globalStop)
 
 	// unbuffer terminal for char-by-char input
-	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
+	exec.Command("stty", "-F", "/dev/stty", "cbreak", "min", "1").Run()
 
 	// i'm doing this wrong
 	bots = append(bots, newRandomBot())
 
-	var launchCode int
+	launchCode := 0
 
 	go func() {
 		for {
 			if globalStop {
 				continue
 			}
+			ticks++
 			drawScreen(bots, score, launchCode)
 			// definitely a better way than manually refreshing
 			time.Sleep(time.Second / tickRate)
-			bots = gameTick(bots)
+			bots = gameTick(bots, ticks/tickRate)
 		}
 	}()
 
@@ -67,9 +69,12 @@ func handleQuit(globalStop *bool) {
 
 func quit(wasManual bool) {
 	exec.Command("stty", "sane").Run()
-	if wasManual {
+	if !wasManual {
 		fmt.Println("game over!")
-		// todo: final score, etc.
+		// todo: move to a pop-up type thing?
+		// +---------------+
+		// +   GAME OVER   +
+		// +---------------+
 	}
 	os.Exit(0)
 }

@@ -12,22 +12,21 @@ func seedRandom() {
 
 // make 8 digit binary string
 func toBin(n int) string {
-	base := strconv.FormatInt(int64(n), 2)
-	for {
-		if len(base) == 8 {
-			return base
-		}
-		base = "0" + base
-	}
+	return pad(n, 2, 8)
 }
 
 // make 2 digit hex string
 func toHex(n int) string {
-	base := strconv.FormatInt(int64(n), 16)
-	if len(base) == 1 {
-		base = "0" + base
+	return pad(n, 16, 2)
+}
+
+// pad string given length and base
+func pad(n, base, length int) string {
+	str := strconv.FormatInt(int64(n), base)
+	for len(str) != length {
+		str = "0" + str
 	}
-	return base
+	return str
 }
 
 // flip a bit based on keyboard key (1-8)
@@ -65,9 +64,9 @@ func filterBotMatch(launchCode int, bots []Bot) ([2]int, []Bot) {
 	return matchCoords, noMatch
 }
 
-func gameTick(bots []Bot) []Bot {
+func gameTick(bots []Bot, ticks int) []Bot {
 	bots = dropBots(bots)
-	if botProbability > rand.Float64() {
+	if botProbability(len(bots), ticks) > rand.Float64() {
 		bots = append(bots, newRandomBot())
 	}
 	return bots
