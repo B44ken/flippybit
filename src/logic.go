@@ -32,7 +32,6 @@ func toHex(n int) string {
 
 // flip a bit based on keyboard key (1-8)
 func makeLaunchCode(cur int, key byte) int {
-
 	key -= 49
 	key = 7 - key
 	if key > 7 {
@@ -45,21 +44,38 @@ func makeLaunchCode(cur int, key byte) int {
 }
 
 func newRandomBot() Bot {
-	y := gameHeight
 	x := rand.Intn(gameWidth)
 	code := rand.Intn(255)
-	return Bot{x, y, code}
+	return Bot{x, 0, 0, code}
 }
 
+// run through all the bots and destroy all the ones with matching codes
 func filterBotMatch(launchCode int, bots []Bot) ([2]int, []Bot) {
 	matchCoords := [2]int{-1, -1}
 	var noMatch []Bot
 	for _, b := range bots {
 		if b.code == launchCode && matchCoords[0] == -1 {
-			matchCoords = [2]int{b.x, b.y}
+			matchCoords = [2]int{b.x, b.age}
 		} else {
 			noMatch = append(noMatch, b)
 		}
 	}
 	return matchCoords, noMatch
+}
+
+// let the bots fall by one every tickRate
+func dropBots(bots []Bot) []Bot {
+	var newBots []Bot
+	for _, b := range bots {
+		b.age += 1 
+		if(b.age == dropEvery) {
+			b.age = 0
+			b.y += 1
+		}
+		newBots = append(newBots, b)
+		if(b.y == gameHeight) {
+			quit(false)
+		}
+	}
+	return newBots
 }

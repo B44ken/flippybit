@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"fmt"
 )
 
 func main() {
@@ -22,7 +23,8 @@ func main() {
 	// unbuffer terminal for char-by-char input
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 
-	for i := 0; i < 10; i++ {
+	// todo: remove & auto place bots
+	for i := 0; i < 2; i++ {
 		bots = append(bots, newRandomBot())
 	}
 
@@ -35,7 +37,8 @@ func main() {
 			}
 			drawScreen(bots, score, launchCode)
 			// there's definitely a better way than manually refreshing
-			time.Sleep(time.Second / 24) 
+			time.Sleep(time.Second / tickRate) 
+			bots = dropBots(bots)
 		}
 	}()
 
@@ -59,9 +62,17 @@ func handleQuit(globalStop *bool) {
 	go func() {
 		<-sig
 		*globalStop = true
-		exec.Command("stty", "+echo").Run()
-		os.Exit(0)
+		quit(true)
 	}()
+}
+	
+func quit(wasManual bool) {
+	exec.Command("stty", "sane").Run()
+	if wasManual {
+		fmt.Println("game over!")
+		// todo: final score, etc.
+	}
+	os.Exit(0)
 }
 
 func listenForKey(key *byte) {
