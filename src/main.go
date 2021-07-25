@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
 	"syscall"
 	"time"
-	"fmt"
 )
 
 func main() {
@@ -23,10 +23,8 @@ func main() {
 	// unbuffer terminal for char-by-char input
 	exec.Command("stty", "-F", "/dev/tty", "-echo").Run()
 
-	// todo: remove & auto place bots
-	for i := 0; i < 2; i++ {
-		bots = append(bots, newRandomBot())
-	}
+	// i'm doing this wrong
+	bots = append(bots, newRandomBot())
 
 	var launchCode int
 
@@ -36,9 +34,9 @@ func main() {
 				continue
 			}
 			drawScreen(bots, score, launchCode)
-			// there's definitely a better way than manually refreshing
-			time.Sleep(time.Second / tickRate) 
-			bots = dropBots(bots)
+			// definitely a better way than manually refreshing
+			time.Sleep(time.Second / tickRate)
+			bots = gameTick(bots)
 		}
 	}()
 
@@ -55,6 +53,7 @@ func main() {
 }
 
 // reset terminal on ctrl c (re-buffer)
+// todo: fix?
 func handleQuit(globalStop *bool) {
 	sig := make(chan os.Signal)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
@@ -65,7 +64,7 @@ func handleQuit(globalStop *bool) {
 		quit(true)
 	}()
 }
-	
+
 func quit(wasManual bool) {
 	exec.Command("stty", "sane").Run()
 	if wasManual {

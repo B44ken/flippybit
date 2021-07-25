@@ -43,8 +43,10 @@ func makeLaunchCode(cur int, key byte) int {
 	return cur ^ (1 << key)
 }
 
+// make a new bot from random values if probability check is met
 func newRandomBot() Bot {
-	x := rand.Intn(gameWidth)
+	// - 4 + 1 to avoid screen edges
+	x := rand.Intn(gameWidth-4) + 1
 	code := rand.Intn(255)
 	return Bot{x, 0, 0, code}
 }
@@ -63,17 +65,25 @@ func filterBotMatch(launchCode int, bots []Bot) ([2]int, []Bot) {
 	return matchCoords, noMatch
 }
 
+func gameTick(bots []Bot) []Bot {
+	bots = dropBots(bots)
+	if botProbability > rand.Float64() {
+		bots = append(bots, newRandomBot())
+	}
+	return bots
+}
+
 // let the bots fall by one every tickRate
 func dropBots(bots []Bot) []Bot {
 	var newBots []Bot
 	for _, b := range bots {
-		b.age += 1 
-		if(b.age == dropEvery) {
+		b.age += 1
+		if b.age == dropEvery {
 			b.age = 0
 			b.y += 1
 		}
 		newBots = append(newBots, b)
-		if(b.y == gameHeight) {
+		if b.y == gameHeight {
 			quit(false)
 		}
 	}

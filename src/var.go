@@ -7,32 +7,6 @@ type Bot struct {
 	code int
 }
 
-/*  THE GAME
-	+--------------------------------+
-	|                                |
-	|                                |
-	|          +49+                  |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	|                                |
-	+--------------------------------+
-	| HEX | BINARY   | SCORE | BEST  |
-	| 00  | 00000000 | 0000  | 0000  |
-	+--------------------------------+
-*/
-
-// 'graphics' in the most liberal way possible
 // todo: replace with unicode seperators
 const gfxSides = "|                                    |"
 const gfxSeperator = "+------------------------------------+"
@@ -41,3 +15,7 @@ const gameWidth = 36
 const gameHeight = 20
 const tickRate = 8
 const dropEvery = tickRate * 1.5
+const botProbability = 0.02
+
+// bot prob. as a function of existing bots and time?
+// func botProbability(botNum time int) float64 { }

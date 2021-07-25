@@ -13,30 +13,33 @@ func resetScreen() {
 }
 
 // dump bot data to terminal
-func drawData(bots []Bot, score, launchCode int) {
+func drawData(bots []Bot) {
 	for _, b := range bots {
 		fmt.Printf("(%d %d %d %s) ", b.x, b.age, b.y, toHex(b.code))
 	}
-	fmt.Println(score, toHex(launchCode), toBin(launchCode))
 }
 
 func drawScreen(bots []Bot, score, launchCode int) {
 	clearScreen()
-	drawData(bots, score, launchCode)
 	fmt.Println(gfxSeperator)
 	drawMain(bots)
 	fmt.Println(gfxSeperator)
 	fmt.Println(gfxWords)
-	// todo: print values
+	drawVals(launchCode)
 	fmt.Println(gfxSeperator)
 }
 
+func drawVals(launchCode int) {
+	hex := toHex(launchCode)
+	bin := toBin(launchCode)
+	fmt.Printf("| %s   | %s  |        |        |\n", hex, bin)
+}
+
 func drawMain(bots []Bot) {
-	// todo: move to drawMain() or something
-	for i := 0; i < 16; i++ {
+	for i := 0; i < gameHeight; i++ {
 		var line = []byte(gfxSides)
 		for _, b := range bots {
-			if(b.y == i) {
+			if b.y == i {
 				code := toHex(b.code)
 				line[b.x] = '<'
 				line[b.x+1] = code[0]
