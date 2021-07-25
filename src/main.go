@@ -70,6 +70,7 @@ func handleQuit(globalStop *bool) {
 	}()
 }
 
+// todo: write high score to disk
 func quit(wasManual bool, score int) {
 	exec.Command("stty", "sane").Run()
 	if !wasManual {
