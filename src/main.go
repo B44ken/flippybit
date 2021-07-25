@@ -45,7 +45,7 @@ func main() {
 			launchCode = makeLaunchCode(launchCode, key)
 			matched, bots = filterBotMatch(launchCode, bots)
 			if matched != [2]int{-1, -1} {
-				launchCode = 0
+				launchCode = 1
 			}
 			key = 0
 		}
