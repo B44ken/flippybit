@@ -15,7 +15,7 @@ func resetScreen() {
 // dump bot data to terminal
 func drawData(bots []Bot) {
 	for _, b := range bots {
-		fmt.Printf("(%d %d %d %s) ", b.x, b.age, b.y, toHex(b.code))
+		fmt.Printf("(%d %d %d %s) ", b.x, b.age, b.y, pad(b.code, 16, 2))
 	}
 }
 
@@ -41,7 +41,7 @@ func drawMain(bots []Bot, gameOver bool) {
 		var line = []byte(gfxSides)
 		for _, b := range bots {
 			if b.y == i {
-				code := toHex(b.code)
+				code := pad(b.code, 16, 2)
 				line[b.x] = '<'
 				line[b.x+1] = code[0]
 				line[b.x+2] = code[1]

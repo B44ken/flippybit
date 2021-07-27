@@ -10,16 +10,6 @@ func seedRandom() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
-// make 8 digit binary string
-func toBin(n int) string {
-	return pad(n, 2, 8)
-}
-
-// make 2 digit hex string
-func toHex(n int) string {
-	return pad(n, 16, 2)
-}
-
 // pad string given length and base
 func pad(n, base, length int) string {
 	str := strconv.FormatInt(int64(n), base)
