@@ -1,5 +1,0 @@
-#! /usr/bin/sh
-
-stty cbreak min 1
-go run ./src
-stty sane
