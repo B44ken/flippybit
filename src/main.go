@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// todo: make these global
 	var bots []Bot
 	var matched [2]int
 	var key byte
@@ -21,11 +22,8 @@ func main() {
 	handleQuit(&globalStop)
 
 	// unbuffer terminal for char-by-char input
-	exec.Command("stty", "cbreak", "min", "1").Run()
-	exec.Command("stty", "-echo").Run()
-	defer exec.Command("stty", "echo").Run()
-
-	bots = append(bots, newRandomBot())
+	runCmd("stty -F '/dev/tty' -icanon min 1")
+	defer runCmd("stty sane")
 
 	launchCode := 0
 
@@ -55,8 +53,12 @@ func main() {
 	}
 }
 
+func runCmd(cmd string) {
+	instance := exec.Command("bash", "-c", cmd)
+	instance.Run()
+}
+
 // reset terminal on ctrl c (re-buffer)
-// todo: fix?
 func handleQuit(globalStop *bool) {
 	sig := make(chan os.Signal)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
@@ -68,7 +70,7 @@ func handleQuit(globalStop *bool) {
 	}()
 }
 
-// todo: write high score to disk
+// todo: write high score to disk?
 func quit(wasManual bool, score int) {
 	exec.Command("stty", "sane").Run()
 	if !wasManual {
