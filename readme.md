@@ -6,5 +6,5 @@ flippybit is a terminal port of the browser game [flippy bit and the attack of t
 - run `make` to populate the ./build directory with binaries or `make run` just to launch
 
 ## dependencies
-- linux, windows (flickers), or mac (probably)
+- linux (target os, works with some bugs on windows)
 - golang
